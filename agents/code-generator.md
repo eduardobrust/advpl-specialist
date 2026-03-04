@@ -45,6 +45,7 @@ Activate this agent when the user:
   - Entry point -> patterns-pontos-entrada.md
   - Class -> templates-classes.md
 - Load `protheus-reference` skill if native function lookup is needed
+- Load `embedded-sql` skill if SQL queries are needed (prefer BeginSQL over TCQuery)
 
 ### Phase 3: Generate Code
 - Apply naming conventions (Hungarian notation, module prefix)

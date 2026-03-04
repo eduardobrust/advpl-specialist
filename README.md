@@ -67,6 +67,7 @@ O plugin detecta automaticamente projetos Protheus (`.prw`, `.tlpp`, `.prx`, `.c
 | `advpl-to-tlpp-migration` | Regras de conversao, checklist e exemplos before/after |
 | `advpl-debugging` | Top 50 erros comuns, metodologia de debug, dicas de performance |
 | `protheus-reference` | 165+ funcoes nativas, dicionario SX, referencia REST API |
+| `embedded-sql` | BeginSQL/EndSQL, macros %table%, %notDel%, %xfilial%, %exp%, column types |
 
 ## Estrutura do Projeto
 
@@ -83,10 +84,11 @@ advpl-specialist/
 │   ├── migrate.md
 │   ├── diagnose.md
 │   └── docs.md
-├── skills/                        # 4 skills com supporting files
+├── skills/                        # 5 skills com supporting files
 │   ├── advpl-code-generation/     # Padroes MVC, REST, PE, classes
 │   ├── advpl-to-tlpp-migration/   # Regras e checklist de migracao
 │   ├── advpl-debugging/           # Erros comuns e performance
+│   ├── embedded-sql/              # BeginSQL/EndSQL, macros, patterns
 │   └── protheus-reference/        # Funcoes nativas, SX, REST API
 ├── hooks/                         # SessionStart hook
 │   ├── hooks.json
@@ -106,6 +108,7 @@ O plugin inclui referencia local para consulta rapida:
 - **16 pontos de entrada** mais usados por modulo
 - **Templates de classes TLPP** (Service, Repository, DTO)
 - **MVC completo** com MenuDef, ModelDef, ViewDef e FWMVCRotAuto
+- **Embedded SQL** completo com BeginSQL/EndSQL, macros, JOINs, aggregations
 
 Para casos nao cobertos localmente, o plugin busca no TDN (TOTVS Developer Network) automaticamente.
 

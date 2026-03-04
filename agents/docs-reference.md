@@ -39,6 +39,7 @@ Activate this agent when the user:
   - SX tables -> sx-dictionary.md
   - REST APIs -> rest-api-reference.md
   - MV parameters -> native-functions.md (system functions section)
+  - Embedded SQL -> embedded-sql skill (BeginSQL/EndSQL, macros)
 
 ### Phase 3: Online Fallback (if not found locally)
 - Use `WebSearch` with query: `site:tdn.totvs.com <search_term> advpl`
