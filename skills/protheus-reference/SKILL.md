@@ -1,0 +1,87 @@
+---
+name: protheus-reference
+description: Use when looking up Protheus native functions, SX data dictionary tables, REST API endpoints, MV parameters, or TOTVS framework documentation
+---
+
+# Protheus Reference
+
+## Overview
+
+Reference guide for the TOTVS Protheus ecosystem. Provides quick access to native functions, data dictionary (SX tables), REST API endpoints, and system parameters (MV_*).
+
+## When to Use
+
+- Looking up native function syntax, parameters, or return values
+- Understanding SX data dictionary structure (SX1 through SX9, SIX)
+- Finding REST API endpoints for Protheus integration
+- Checking MV_* parameter purpose and default values
+- Understanding .ini configuration files (appserver.ini, smartclient.ini)
+
+## Lookup Strategy
+
+```dot
+digraph lookup {
+    "Need function/API info?" [shape=diamond];
+    "Check native-functions.md" [shape=box];
+    "Found?" [shape=diamond];
+    "Return result" [shape=box];
+    "Search TDN online" [shape=box];
+    "WebSearch: site:tdn.totvs.com <term>" [shape=box];
+
+    "Need function/API info?" -> "Check native-functions.md";
+    "Check native-functions.md" -> "Found?";
+    "Found?" -> "Return result" [label="yes"];
+    "Found?" -> "Search TDN online" [label="no"];
+    "Search TDN online" -> "WebSearch: site:tdn.totvs.com <term>";
+}
+```
+
+1. **Local first:** Check supporting files (native-functions.md, sx-dictionary.md, rest-api-reference.md)
+2. **Online fallback:** Search TDN with `WebSearch` using query: `site:tdn.totvs.com <function_name>`
+3. **WebFetch TDN page:** If URL found, use `WebFetch` to extract details
+
+## Function Categories
+
+| Category | Common Functions | File Reference |
+|----------|-----------------|----------------|
+| String | Alltrim, SubStr, StrTran, Pad*, Upper, Lower | native-functions.md |
+| Date/Time | dDataBase, DtoS, StoD, Day, Month, Year | native-functions.md |
+| Array | aAdd, aDel, aSize, aScan, aSort, aClone | native-functions.md |
+| Database | DbSelectArea, DbSetOrder, DbSeek, RecLock, MsUnlock | native-functions.md |
+| Interface | MsgInfo, MsgYesNo, MsgAlert, FWExecView, Enchoice | native-functions.md |
+| File I/O | FOpen, FRead, FWrite, FClose, FErase, Directory | native-functions.md |
+| Network | HttpGet, HttpPost, FWRest, WsRestFul | native-functions.md |
+| System | GetMV, PutMV, SuperGetMV, Conout, FWLogMsg | native-functions.md |
+
+## Data Dictionary Quick Reference
+
+| Table | Purpose |
+|-------|---------|
+| SX1 | Perguntas (parameters for reports/routines) |
+| SX2 | Tabelas (table definitions) |
+| SX3 | Campos (field definitions) |
+| SX5 | Tabelas genericas (generic lookup tables) |
+| SX6 | Parametros (MV_* system parameters) |
+| SX7 | Gatilhos (field triggers) |
+| SX9 | Relacionamentos (table relationships) |
+| SXB | Consultas padrao (standard queries) |
+| SIX | Indices (index definitions) |
+
+See `sx-dictionary.md` for complete structure with field descriptions.
+
+## REST API Patterns
+
+Protheus REST APIs follow two main patterns:
+
+1. **FWRest Framework** (newer): Annotation-based with `@Get`, `@Post`, `@Put`, `@Delete`
+2. **WsRestFul** (legacy): Class-based with `wsmethod`
+
+See `rest-api-reference.md` for endpoint patterns and authentication.
+
+## Online Search Tips
+
+When searching TDN (TOTVS Developer Network):
+- Use `WebSearch` with query: `site:tdn.totvs.com <function_name> advpl`
+- For API docs: `site:tdn.totvs.com rest api <endpoint_name>`
+- For release notes: `site:tdn.totvs.com <feature> release notes`
+- TDN base URL: `https://tdn.totvs.com`
