@@ -14,10 +14,10 @@ CH_COUNT=$(find . -maxdepth 3 -name "*.ch" -type f 2>/dev/null | head -50 | wc -
 
 if [ "$PRW_COUNT" -gt 0 ] || [ "$TLPP_COUNT" -gt 0 ] || [ "$PRX_COUNT" -gt 0 ] || [ "$CH_COUNT" -gt 0 ]; then
     FOUND=1
-    [ "$PRW_COUNT" -gt 0 ] && COUNTS="$COUNTS ${PRW_COUNT} .prw"
-    [ "$TLPP_COUNT" -gt 0 ] && COUNTS="$COUNTS ${TLPP_COUNT} .tlpp"
-    [ "$PRX_COUNT" -gt 0 ] && COUNTS="$COUNTS ${PRX_COUNT} .prx"
-    [ "$CH_COUNT" -gt 0 ] && COUNTS="$COUNTS ${CH_COUNT} .ch"
+    [ "$PRW_COUNT" -gt 0 ] && COUNTS="$COUNTS $([ "$PRW_COUNT" -ge 50 ] && echo '50+' || echo "$PRW_COUNT") .prw"
+    [ "$TLPP_COUNT" -gt 0 ] && COUNTS="$COUNTS $([ "$TLPP_COUNT" -ge 50 ] && echo '50+' || echo "$TLPP_COUNT") .tlpp"
+    [ "$PRX_COUNT" -gt 0 ] && COUNTS="$COUNTS $([ "$PRX_COUNT" -ge 50 ] && echo '50+' || echo "$PRX_COUNT") .prx"
+    [ "$CH_COUNT" -gt 0 ] && COUNTS="$COUNTS $([ "$CH_COUNT" -ge 50 ] && echo '50+' || echo "$CH_COUNT") .ch"
 fi
 
 if [ "$FOUND" -eq 1 ]; then
