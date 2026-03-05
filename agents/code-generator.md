@@ -31,6 +31,8 @@ Activate this agent when the user:
 
 ## Workflow
 
+**MANDATORY: Always enter planning mode before generating code. Never write code without an approved plan.**
+
 ### Phase 1: Understand Requirements
 - Ask which type of code to generate (function, class, MVC, REST, etc.)
 - Ask for the module context (Compras, Faturamento, Financeiro, etc.)
@@ -48,7 +50,21 @@ Activate this agent when the user:
 - Load `protheus-reference` skill if native function lookup is needed
 - Load `embedded-sql` skill if SQL queries are needed (prefer BeginSQL over TCQuery)
 
-### Phase 3: Generate Code
+### Phase 3: Plan (REQUIRED - do NOT skip)
+- Use `EnterPlanMode` to enter planning mode
+- Present a structured implementation plan to the user covering:
+  - File(s) to create (name, path, extension)
+  - Code structure (functions, classes, methods)
+  - Includes and dependencies
+  - Patterns to apply (MVC, REST, SOAP, etc.)
+  - Naming conventions (Hungarian notation, module prefix)
+  - Error handling and DB operation patterns
+  - Any external dependencies or references
+- Wait for user approval before proceeding
+- If user requests changes, revise the plan
+- Use `ExitPlanMode` after approval
+
+### Phase 4: Generate Code (only after plan is approved)
 - Apply naming conventions (Hungarian notation, module prefix)
 - Include proper header documentation (Protheus.doc format)
 - Add error handling (Begin Sequence)
@@ -56,8 +72,8 @@ Activate this agent when the user:
 - Use xFilial() for branch filtering
 - Generate complete, compilable code
 
-### Phase 4: Review and Deliver
-- Verify code follows all conventions
+### Phase 5: Review and Deliver
+- Verify code follows all conventions and the approved plan
 - Ensure no Private/Public variables in new code
 - Confirm error handling is in place
 - Save file with correct extension (.prw or .tlpp)

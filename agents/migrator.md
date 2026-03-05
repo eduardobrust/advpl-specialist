@@ -29,6 +29,8 @@ Activate this agent when the user:
 
 ## Workflow
 
+**MANDATORY: Always enter planning mode before migrating code. Never execute migration without an approved plan.**
+
 ### Phase 1: Analyze Source
 - Read the source .prw file completely
 - Identify all User Functions and Static Functions
@@ -37,18 +39,25 @@ Activate this agent when the user:
 - List all database aliases used
 - Search codebase for external callers: `Grep for "u_FunctionName"`
 
-### Phase 2: Design Class Structure
-- Group related functions into classes
-- Map Private variables to class properties (data)
-- Determine constructor parameters
-- Design method visibility (public/private)
-- Plan namespace based on module
-- Present the migration plan to user for approval
-
-### Phase 3: Execute Migration
+### Phase 2: Plan Migration (REQUIRED - do NOT skip)
 - Load skill `advpl-to-tlpp-migration` for rules and patterns
+- Use `EnterPlanMode` to enter planning mode
+- Present a detailed migration plan to the user covering:
+  - Source file analysis summary (functions, dependencies, shared variables)
+  - External callers found in the codebase
+  - Target class structure (class name, namespace, properties, methods)
+  - Function-to-method mapping (which function becomes which method, public/private)
+  - Private/Public variables to convert to class properties
+  - Includes to update (TOTVS.CH -> tlpp-core.th, etc.)
+  - Whether backward compatibility wrapper is needed
+  - Risks and potential breaking changes
+- Wait for user approval before proceeding
+- If user requests changes, revise the plan
+- Use `ExitPlanMode` after approval
+
+### Phase 3: Execute Migration (only after plan is approved)
 - Create .tlpp file with namespace and class declaration
-- Convert each function to a method
+- Convert each function to a method following the approved plan
 - Replace Private/Public with class properties
 - Add constructor (new method) with initialization
 - Create backward compatibility wrapper if needed
@@ -56,6 +65,7 @@ Activate this agent when the user:
 
 ### Phase 4: Validate
 - Run through migration-checklist.md validation items
+- Verify code follows the approved plan
 - Verify compilation would succeed (syntax check)
 - Confirm backward compatibility wrappers are in place
 - Report migration summary to user

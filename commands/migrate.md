@@ -28,16 +28,35 @@ Convert ADVPL procedural code to TLPP with object-oriented patterns.
 
 ## Process
 
+**MANDATORY: Always enter planning mode before migrating code. Never skip planning.**
+
+### Analysis Phase
 1. **Read source file** - Read the .prw file completely
 2. **Analyze structure** - Identify functions, dependencies, shared variables
 3. **Search for callers** - Grep codebase for `u_FunctionName` references
-4. **Design class structure** - Map functions to classes and methods
-5. **Present plan** - Show migration mapping to user for approval
-6. **If --dry-run** - Stop here and show the plan
-7. **Execute migration** - Generate .tlpp file(s) following `advpl-to-tlpp-migration` skill
-8. **Generate wrapper** - Create backward compatibility .prw wrapper if --wrapper
-9. **Run checklist** - Validate against migration-checklist.md
-10. **Report** - Show summary of changes
+
+### Planning Phase (REQUIRED)
+4. **Load skill** - Invoke `advpl-to-tlpp-migration` skill for rules and checklist
+5. **Enter plan mode** - Use `EnterPlanMode` to create a structured migration plan
+6. **Design class structure** - Map functions to classes and methods
+7. **Present plan** - Show the user a detailed migration plan including:
+   - Source file analysis (functions found, dependencies, shared variables)
+   - External callers that will be impacted
+   - Target class structure (class name, namespace, properties, methods)
+   - Mapping: which function becomes which method (public/private)
+   - Private/Public variables to convert to class properties
+   - Includes to update (TOTVS.CH -> tlpp-core.th, etc.)
+   - Whether a backward compatibility wrapper is needed
+   - Any risks or breaking changes
+8. **Wait for approval** - The user must approve the plan before any code is written. If the user requests changes, revise the plan.
+9. **If --dry-run** - Stop here after showing the plan
+10. **Exit plan mode** - Use `ExitPlanMode` after approval
+
+### Implementation Phase (only after approval)
+11. **Execute migration** - Generate .tlpp file(s) following the approved plan and `advpl-to-tlpp-migration` skill
+12. **Generate wrapper** - Create backward compatibility .prw wrapper if --wrapper
+13. **Run checklist** - Validate against migration-checklist.md
+14. **Report** - Show summary of changes
 
 ## Examples
 

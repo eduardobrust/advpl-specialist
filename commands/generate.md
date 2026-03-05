@@ -37,14 +37,29 @@ Generate new ADVPL or TLPP code following Protheus conventions and best practice
 
 ## Process
 
+**MANDATORY: Always enter planning mode before generating code. Never skip planning.**
+
+### Planning Phase (REQUIRED)
 1. **Parse arguments** - Extract type, name, and flags
 2. **Ask missing details** - If name or module not provided, ask the user
 3. **Ask business requirements** - What should the code do?
 4. **Load skill** - Invoke `advpl-code-generation` skill
 5. **Load patterns** - Read appropriate supporting file for the type
-6. **Generate code** - Create complete, production-ready code following all conventions
-7. **Write file** - Save with correct extension (.prw or .tlpp)
-8. **Report** - Show what was created and key decisions
+6. **Enter plan mode** - Use `EnterPlanMode` to create a structured implementation plan
+7. **Present plan** - Show the user a clear plan including:
+   - File(s) to be created (name, path, extension)
+   - Code structure (functions, classes, methods to implement)
+   - Includes and dependencies
+   - Key patterns to apply (MVC, REST, SOAP, etc.)
+   - Naming conventions to follow (Hungarian notation, module prefix)
+   - Error handling and DB operation patterns
+8. **Wait for approval** - The user must approve the plan before any code is written. If the user requests changes, revise the plan.
+9. **Exit plan mode** - Use `ExitPlanMode` after approval
+
+### Implementation Phase (only after approval)
+10. **Generate code** - Create complete, production-ready code following the approved plan
+11. **Write file** - Save with correct extension (.prw or .tlpp)
+12. **Report** - Show what was created and key decisions
 
 ## Examples
 
