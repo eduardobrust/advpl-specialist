@@ -6,6 +6,8 @@ argument-hint: "<term> [--source tdn|local] [--type function|sx|api|param]"
 
 # /advpl-specialist:docs
 
+**IMPORTANT:** Always respond in the same language the user is writing in. If the user writes in Portuguese, respond in Portuguese. If in English, respond in English. Adapt all explanations and suggestions to the user's language.
+
 Look up documentation for Protheus functions, APIs, tables, and parameters.
 
 ## Usage

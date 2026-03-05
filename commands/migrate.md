@@ -6,6 +6,8 @@ argument-hint: "<file.prw> [--output file.tlpp] [--dry-run]"
 
 # /advpl-specialist:migrate
 
+**IMPORTANT:** Always respond in the same language the user is writing in. If the user writes in Portuguese, respond in Portuguese. If in English, respond in English. Adapt all explanations and suggestions to the user's language. Code comments may remain in English or match the user's language.
+
 Convert ADVPL procedural code to TLPP with object-oriented patterns.
 
 ## Usage

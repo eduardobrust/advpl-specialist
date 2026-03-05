@@ -6,6 +6,8 @@ argument-hint: "<file|error-message> [--log logfile]"
 
 # /advpl-specialist:diagnose
 
+**IMPORTANT:** Always respond in the same language the user is writing in. If the user writes in Portuguese, respond in Portuguese. If in English, respond in English. Adapt all explanations, error descriptions, and suggestions to the user's language. Code comments may remain in English or match the user's language.
+
 Diagnose and resolve ADVPL/TLPP errors and problems.
 
 ## Usage
