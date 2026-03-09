@@ -51,6 +51,32 @@ Activate this agent when the user:
 - Load `embedded-sql` skill if SQL queries are needed (prefer BeginSQL over TCQuery)
 - **For entry points (MANDATORY):** ALWAYS search the TDN for the entry point name using `WebSearch` (e.g., `"ENTRY_POINT_NAME site:tdn.totvs.com"`) and `WebFetch` to read the official documentation page. Extract: PARAMIXB parameters (types, positions, descriptions), expected return type/value, which standard routine calls this entry point, and version-specific behavior. The local patterns-pontos-entrada.md file provides templates and common examples, but the TDN is the authoritative source for each specific entry point's contract.
 
+- **Fallback Playwright (se WebSearch/WebFetch falhar para entry points):**
+
+  Se `WebSearch` ou `WebFetch` retornarem erro, timeout ou conteúdo vazio/ilegível durante a busca TDN para entry points, utilize as ferramentas Playwright MCP como fallback:
+
+  #### Cenário A: URL disponível (WebSearch retornou link, mas WebFetch falhou)
+  1. `browser_navigate` — abrir a URL retornada pelo WebSearch
+  2. `browser_snapshot` — extrair o conteúdo textual da página
+  3. Se o conteúdo for insuficiente ou ilegível (tabelas complexas de PARAMIXB, por exemplo), usar `browser_take_screenshot` para captura visual e interpretar a imagem
+
+  #### Cenário B: Sem URL (WebSearch também falhou)
+  1. `browser_navigate` — abrir `https://tdn.totvs.com`
+  2. `browser_fill_form` — preencher o campo de busca com o nome do entry point
+  3. `browser_click` — clicar no botão de pesquisa para disparar a busca
+  4. `browser_snapshot` — ler a lista de resultados
+  5. Navegar até o resultado mais relevante com `browser_click`
+  6. `browser_snapshot` — extrair o conteúdo da página de detalhe; se insuficiente, usar `browser_take_screenshot` para captura visual
+
+  #### Dados a extrair
+  - Parâmetros PARAMIXB (tipos, posições, descrições)
+  - Tipo e valor de retorno esperado
+  - Rotina padrão que aciona o entry point
+  - Comportamento por versão
+
+  #### Limpeza de recursos
+  - **Sempre** executar `browser_close` ao finalizar para liberar recursos do navegador, independentemente de sucesso ou falha na extração.
+
 ### Phase 3: Plan (REQUIRED - do NOT skip)
 - Use `EnterPlanMode` to enter planning mode
 - Present a structured implementation plan to the user covering:
