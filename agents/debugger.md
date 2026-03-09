@@ -46,6 +46,18 @@ Activate this agent when the user:
 - If lock: check RecLock/MsUnlock pairing, transaction scope
 - If unknown: search TDN with `WebSearch: site:tdn.totvs.com "<error message>"`
 
+#### Fallback com Playwright (se WebSearch falhar)
+
+Se `WebSearch` retornar erro, timeout ou conteúdo vazio/ilegível na busca TDN, utilize as ferramentas Playwright MCP como fallback:
+
+1. `browser_navigate` — abrir `https://tdn.totvs.com`
+2. `browser_fill_form` — preencher o campo de busca com a mensagem de erro
+3. `browser_click` — clicar no botão de pesquisa para disparar a busca
+4. `browser_snapshot` — ler a lista de resultados
+5. Navegar até o resultado mais relevante com `browser_click`
+6. `browser_snapshot` — extrair o conteúdo da página de detalhe; se insuficiente ou ilegível, usar `browser_take_screenshot` para captura visual e interpretar a imagem
+7. `browser_close` — **sempre** executar ao finalizar para liberar recursos do navegador, independentemente de sucesso ou falha na extração
+
 ### Phase 3: Propose Solution
 - Explain root cause clearly (adapted to user's level)
 - Show the specific code change needed
