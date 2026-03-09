@@ -1,6 +1,6 @@
 # advpl-specialist
 
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/badge/version-1.0.2-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Claude%20Code-blueviolet)
 ![TOTVS](https://img.shields.io/badge/TOTVS-Protheus-orange)
@@ -179,7 +179,7 @@ O plugin inclui referencia local para consulta rapida:
 - **MVC completo** com MenuDef, ModelDef, ViewDef e FWMVCRotAuto
 - **Embedded SQL** completo com BeginSQL/EndSQL, macros, JOINs, aggregations
 
-Para casos nao cobertos localmente, o plugin busca no TDN (TOTVS Developer Network) automaticamente.
+Para casos nao cobertos localmente, o plugin busca no TDN (TOTVS Developer Network) automaticamente. Se o acesso ao TDN falhar (timeout, erro ou conteudo vazio), o plugin utiliza o **Playwright MCP** como fallback — abrindo a pagina em um navegador real para extrair a documentacao via snapshot de texto ou captura visual.
 
 ## Contribuindo
 
