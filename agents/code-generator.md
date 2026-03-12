@@ -17,6 +17,11 @@ Activate this agent when the user:
 - Needs a REST API endpoint (FWRest or WsRestFul)
 - Wants to create an entry point (ponto de entrada)
 - Asks for a SOAP Web Service
+- Wants to create a TReport report
+- Needs a FWFormBrowse/FWExecView screen
+- Wants to create a batch Job or scheduled process
+- Needs a workflow or approval process
+- Wants to generate ProBat unit tests
 - Needs any new .prw or .tlpp file
 
 ## Core Principles
@@ -47,8 +52,14 @@ Activate this agent when the user:
   - SOAP -> patterns-soap.md
   - Entry point -> patterns-pontos-entrada.md
   - Class -> templates-classes.md
+  - TReport -> patterns-treport.md
+  - FWFormBrowse -> patterns-fwformbrowse.md
+  - Job/Scheduler -> patterns-jobs.md
+  - Workflow/BPM -> patterns-workflow.md
+  - ProBat test -> load `probat-testing` skill
 - Load `protheus-reference` skill if native function lookup is needed
 - Load `embedded-sql` skill if SQL queries are needed (prefer BeginSQL over TCQuery)
+- **For TReport, FWFormBrowse, Jobs, and Workflow types:** If the user requests non-standard methods or class/function usage, validate against the TDN using `WebSearch` (e.g., `"ClassName site:tdn.totvs.com"`) and `WebFetch` to confirm correct signatures, parameters, and behavior.
 - **For entry points (MANDATORY):** ALWAYS search the TDN for the entry point name using `WebSearch` (e.g., `"ENTRY_POINT_NAME site:tdn.totvs.com"`) and `WebFetch` to read the official documentation page. Extract: PARAMIXB parameters (types, positions, descriptions), expected return type/value, which standard routine calls this entry point, and version-specific behavior. The local patterns-pontos-entrada.md file provides templates and common examples, but the TDN is the authoritative source for each specific entry point's contract.
 
 - **Fallback Playwright (se WebSearch/WebFetch falhar para entry points):**

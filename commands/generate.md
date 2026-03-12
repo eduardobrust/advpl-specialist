@@ -26,6 +26,10 @@ Generate new ADVPL or TLPP code following Protheus conventions and best practice
 | `rest` | REST API endpoint | .prw or .tlpp file |
 | `ponto-entrada` | Entry point | .prw file |
 | `webservice` | SOAP Web Service | .prw file |
+| `treport` | TReport report | .prw file |
+| `fwformbrowse` | FWFormBrowse/FWExecView screen | .prw file |
+| `job` | Batch job / scheduled process | .prw or .tlpp file |
+| `workflow` | Approval workflow process | .prw file |
 
 ## Options
 
@@ -83,6 +87,18 @@ Generate new ADVPL or TLPP code following Protheus conventions and best practice
 
 # Create a SOAP Web Service
 /advpl-specialist:generate webservice WSPedido
+
+# Create a TReport report
+/advpl-specialist:generate treport RelProdutos --module EST
+
+# Create a FWFormBrowse screen
+/advpl-specialist:generate fwformbrowse CadFornecedores --module COM
+
+# Create a batch processing job
+/advpl-specialist:generate job JobProcessaNotas --module FAT
+
+# Create an approval workflow
+/advpl-specialist:generate workflow AprovacaoPedido --module COM
 ```
 
 ## Output
