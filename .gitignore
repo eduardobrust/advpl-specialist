@@ -12,3 +12,9 @@ Thumbs.db
 # Project local files
 docs/
 linkedin-post.txt
+
+# Playwright MCP
+.playwright-mcp/
+
+# Screenshots
+*.png
