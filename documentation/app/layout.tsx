@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     locale: 'pt_BR',
     images: [
       {
-        url: '/advpl-specialist/og-image.png',
+        url: 'https://thalysjuvenal.github.io/advpl-specialist/og-image.png',
         width: 1200,
         height: 630,
         alt: 'advpl-specialist - Plugin para Claude Code especializado em ADVPL e TLPP para TOTVS Protheus',
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: 'advpl-specialist',
     description:
       'Plugin para Claude Code especializado em ADVPL e TLPP para TOTVS Protheus',
-    images: ['/advpl-specialist/og-image.png'],
+    images: ['https://thalysjuvenal.github.io/advpl-specialist/og-image.png'],
   },
 };
 
