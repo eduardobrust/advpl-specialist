@@ -8,6 +8,23 @@ Todas as mudancas notaveis deste projeto sao documentadas neste arquivo.
 O formato e baseado no [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e este projeto segue o [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-03-17
+
+### Adicionado
+
+- Novo comando `/explain` para explicacao de codigo em 3 niveis de audiencia (junior, senior, funcional)
+- Novo comando `/refactor` com agent `refactorer` e skill `advpl-refactoring` (6 padroes de refatoracao com before/after)
+- Novo comando `/document` com agent `doc-generator` e skill `documentation-patterns` (cabecalho Protheus.doc, documentacao completa, documentacao de API)
+- Novo comando `/changelog` com agent `changelog-generator` e skill `changelog-patterns`
+- Novo comando `/sxgen` com agent `sx-configurator` e skill `sx-configuration` (scripts de dicionario SX3, SIX, SX1, SX5, SX7 a partir de linguagem natural)
+- Nova skill `code-explanation` com metodologia de 3 niveis para explicacao de codigo
+- Site de documentacao construido com Fumadocs (Next.js + MDX) hospedado no GitHub Pages
+- Documentacao completa cobrindo todos os 12 comandos, 10 agentes, 14 skills, referencia e processos de negocio
+
+### Corrigido
+
+- Removida chave `bugs` nao suportada do manifesto plugin.json
+
 ## [1.0.3] - 2026-03-11
 
 ### Adicionado
