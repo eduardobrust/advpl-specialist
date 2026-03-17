@@ -21,12 +21,21 @@ export const metadata: Metadata = {
     siteName: 'advpl-specialist',
     type: 'website',
     locale: 'pt_BR',
+    images: [
+      {
+        url: '/advpl-specialist/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'advpl-specialist - Plugin para Claude Code especializado em ADVPL e TLPP para TOTVS Protheus',
+      },
+    ],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'advpl-specialist',
     description:
       'Plugin para Claude Code especializado em ADVPL e TLPP para TOTVS Protheus',
+    images: ['/advpl-specialist/og-image.png'],
   },
 };
 

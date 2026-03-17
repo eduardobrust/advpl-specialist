@@ -18,3 +18,4 @@ linkedin-post.txt
 
 # Screenshots
 *.png
+!documentation/public/og-image.png
