@@ -8,6 +8,8 @@
 
 Plugin para Claude Code especializado em **ADVPL** e **TLPP** para desenvolvimento no ecossistema **TOTVS Protheus** — para **desenvolvedores** e **consultores funcionais**.
 
+**Documentacao completa:** [https://thalysjuvenal.github.io/advpl-specialist](https://thalysjuvenal.github.io/advpl-specialist)
+
 ## Indice
 
 - [Quick Start](#quick-start)
