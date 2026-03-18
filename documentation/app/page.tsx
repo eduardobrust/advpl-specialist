@@ -9,7 +9,7 @@ export default function Home() {
       <section className="flex flex-col items-center text-center px-4 py-20 md:py-32 gap-6 max-w-4xl mx-auto">
         <div className="flex gap-2 flex-wrap justify-center">
           <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium text-fd-muted-foreground">
-            v1.0.4
+            v1.0.5
           </span>
           <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium text-fd-muted-foreground">
             MIT License

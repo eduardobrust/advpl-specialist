@@ -6,6 +6,22 @@ Todas as mudancas notaveis deste projeto serao documentadas neste arquivo.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-03-18
+
+### Fixed / Corrigido
+- Replaced direct SX dictionary access (`DbSelectArea("SX1/SX2/SX3/SX5/SX6/SIX")`) with recommended TOTVS framework classes: `FWSX1Util`, `FWSX2Util`, `FWSX3Util`, `FWSX6Util`, `FWSIXUtil`, `FWGetSX5()`, `FwPutSX5()` (thanks [@wesleywwf](https://github.com/wesleywwf) for reporting [#1](https://github.com/thalysjuvenal/advpl-specialist/issues/1))
+- Substituido acesso direto aos dicionarios SX (`DbSelectArea("SX1/SX2/SX3/SX5/SX6/SIX")`) pelas classes recomendadas pela TOTVS: `FWSX1Util`, `FWSX2Util`, `FWSX3Util`, `FWSX6Util`, `FWSIXUtil`, `FWGetSX5()`, `FwPutSX5()` (obrigado [@wesleywwf](https://github.com/wesleywwf) por reportar [#1](https://github.com/thalysjuvenal/advpl-specialist/issues/1))
+
+### Added / Adicionado
+- TOTVS disclaimer in documentation site footer (no affiliation with TOTVS S.A.)
+- Disclaimer TOTVS no rodape do site de documentacao (sem vinculo com a TOTVS S.A.)
+- OG image for social media sharing preview (1200x630px)
+- Imagem OG para preview de compartilhamento em redes sociais (1200x630px)
+- Portuguese (pt-BR) translations for Fumadocs UI (search, TOC, navigation, theme)
+- Traducoes em portugues (pt-BR) para a UI do Fumadocs (pesquisa, sumario, navegacao, tema)
+- Translated all 10 agent documentation pages to Portuguese
+- Traduzidas todas as 10 paginas de documentacao de agentes para portugues
+
 ## [1.0.4] - 2026-03-17
 
 ### Added / Adicionado
