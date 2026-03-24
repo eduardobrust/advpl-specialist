@@ -48,7 +48,7 @@ Repositorio: [https://github.com/thalysjuvenal/advpl-specialist](https://github.
 - **Geracao de codigo** - Funcoes, classes TLPP, MVC, REST APIs, Web Services, pontos de entrada, TReport, FWFormBrowse, Jobs, Workflow
 - **Migracao ADVPL -> TLPP** - Conversao de codigo procedural para orientado a objetos
 - **Diagnostico de erros** - Analise de erros de compilacao, runtime, performance e locks
-- **Revisao de codigo** - Analise com 23 regras de boas praticas, performance, seguranca e modernizacao (inclui deteccao de funcoes restritas da TOTVS e variaveis reservadas do sistema)
+- **Revisao de codigo** - Analise com 24 regras de boas praticas, performance, seguranca e modernizacao (inclui deteccao de funcoes restritas da TOTVS e variaveis reservadas do sistema)
 - **Testes ProBat** - Geracao de testes unitarios para codigo TLPP
 - **Referencia de documentacao** - Funcoes nativas, dicionario SX, APIs REST, parametros MV_*, funcoes FW* de empresa/filial, lista de funcoes restritas da TOTVS
 - **Processos de negocio** - Consulta de rotinas, tabelas, integracoes e fluxos de 8 modulos ERP
@@ -181,7 +181,7 @@ Para uma experiencia completa, recomendamos instalar o plugin oficial **superpow
 | `advpl-code-generation` | Padroes e templates para geracao de codigo (MVC, REST, PE, SOAP, TReport, FWFormBrowse, Jobs, Workflow) |
 | `advpl-to-tlpp-migration` | Regras de conversao, checklist e exemplos before/after |
 | `advpl-debugging` | Top 50 erros comuns, metodologia de debug, dicas de performance |
-| `advpl-code-review` | 23 regras de revisao de codigo (boas praticas, performance, seguranca, modernizacao) |
+| `advpl-code-review` | 24 regras de revisao de codigo (boas praticas, performance, seguranca, modernizacao) |
 | `probat-testing` | Framework ProBat para testes unitarios TLPP (annotations, assertions, patterns) |
 | `protheus-reference` | 190+ funcoes nativas, dicionario SX, referencia REST API, funcoes FW*, lista de funcoes restritas |
 | `protheus-business` | 8 modulos ERP com tabelas, rotinas, parametros MV_* e integracoes |
@@ -232,7 +232,7 @@ advpl-specialist/
 │   ├── advpl-code-generation/     # Padroes MVC, REST, SOAP, PE, TReport, FWFormBrowse, Jobs, Workflow
 │   ├── advpl-to-tlpp-migration/   # Regras e checklist de migracao
 │   ├── advpl-debugging/           # Erros comuns e performance
-│   ├── advpl-code-review/         # 23 regras de revisao de codigo
+│   ├── advpl-code-review/         # 24 regras de revisao de codigo
 │   ├── probat-testing/            # Testes unitarios ProBat (TLPP)
 │   ├── protheus-business/         # 8 modulos ERP (COM, EST, FAT, FIN, CTB, FIS, PCP, MNT)
 │   ├── embedded-sql/              # BeginSQL/EndSQL, macros, patterns

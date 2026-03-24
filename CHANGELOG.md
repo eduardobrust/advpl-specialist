@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6] - 2026-03-23
 
 ### Added / Adicionado
+- New `[BP-002]` code review rule: detects `Local` variable declarations outside the function header (inside If/While/For blocks or after executable statements)
+- Nova regra de revisao `[BP-002]`: detecta declaracoes de variaveis `Local` fora do cabecalho da funcao (dentro de blocos If/While/For ou apos statements executaveis)
+- Complete `TWsdlManager` class documentation in native-functions.md (11 methods + properties, validated against TDN)
+- Documentacao completa da classe `TWsdlManager` em native-functions.md (11 metodos + propriedades, validados contra o TDN)
+- Critical sections in code-generator agent for `JsonObject`, `TWsdlManager`, and `FWFormView` method validation
+- Secoes criticas no agente code-generator para validacao de metodos de `JsonObject`, `TWsdlManager` e `FWFormView`
 - New `[BP-008]` code review rule: detects usage of reserved system variables (`cFilial`, `cFilAnt`, `cEmpAnt`) as Local/Static variables, with recommended alternatives (`cCodFil`, `cCodEmp`)
 - Nova regra de revisao `[BP-008]`: detecta uso de variaveis reservadas do sistema (`cFilial`, `cFilAnt`, `cEmpAnt`) como Local/Static, com alternativas recomendadas (`cCodFil`, `cCodEmp`)
 - New `[SEC-005]` security rule: detects usage of 195+ TOTVS restricted/internal functions, classes, and variables with supported alternatives
@@ -19,6 +25,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nova secao `Company/Branch Management Functions (FW*)` em native-functions.md com 10 funcoes documentadas: `FWCodFil`, `FWCodEmp`, `FWFilial`, `FWCompany`, `FWGrpCompany`, `FWUnitBusiness`, `FWAllCompany`, `FWAllFilial`, `FWAllGrpCompany`, `FWSizeFilial`
 
 ### Fixed / Corrigido
+- Removed fabricated `GetSoapFault()` method from TWsdlManager patterns — SOAP faults accessed via properties (`cFaultCode`, `cFaultString`)
+- Removido metodo fabricado `GetSoapFault()` dos padroes TWsdlManager — SOAP faults acessados via propriedades (`cFaultCode`, `cFaultString`)
+- Removed fabricated `ListServices()` method from TWsdlManager patterns — use `SetPort()` + `ListOperations()`
+- Removido metodo fabricado `ListServices()` dos padroes TWsdlManager — usar `SetPort()` + `ListOperations()`
+- Fixed `EnableTitleGroup` → `EnableTitleView` in MVC and FWFormBrowse patterns (EnableTitleGroup does not exist)
+- Corrigido `EnableTitleGroup` → `EnableTitleView` nos padroes MVC e FWFormBrowse (EnableTitleGroup nao existe)
+- Moved all `Local` variable declarations to function headers across 15+ code examples in patterns-rest.md, templates-classes.md
+- Movidas todas as declaracoes de variaveis `Local` para o cabecalho das funcoes em 15+ exemplos de codigo em patterns-rest.md, templates-classes.md
+- Updated rules count from 23 to 24 in README
+- Atualizada contagem de regras de 23 para 24 no README
 - Replaced `cFilial` with `cCodFil` and `cEmpresa` with `cCodEmp` in all code examples (reserved Private variable names must not be used as Local variables)
 - Substituido `cFilial` por `cCodFil` e `cEmpresa` por `cCodEmp` em todos os exemplos de codigo (nomes de variaveis Private reservadas nao podem ser usados como variaveis Local)
 - Updated `StaticCall()` documentation to reflect compilation blocked status since release 12.1.33
