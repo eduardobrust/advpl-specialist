@@ -73,6 +73,16 @@ See `restricted-functions.md` for the complete list and supported alternatives.
 | TWsdlManager | New, ParseURL, ParseFile, SetOperation, SendSoapMsg, GetParsedResponse, GetSoapResponse, GetSoapMsg, ListOperations, SetPort, SetValue | native-functions.md |
 | Browse/UI | FwBrowse, FWMarkBrowse, FWBrwColumn, FWBrwRelation, FWLegend, FWCalendar, FWSimpEdit | native-functions.md |
 | Process | FWGridProcess, tNewProcess | native-functions.md |
+| WorkArea | FwGetArea, FwRestArea | native-functions.md |
+| User | FwGetUserName, UsrRetName | native-functions.md |
+| Dialog | FWMsgRun, FWInputBox | native-functions.md |
+| Memory | FWFreeObj, FWFreeVar | native-functions.md |
+| Date ISO | Fw8601ToDate, FWDateTo8601 | native-functions.md |
+| URL Encode | FWHttpEncode, FWURIDecode | native-functions.md |
+| Semaphore | MayIUseCode, MPCriaNumS | native-functions.md |
+| Dictionary | FWX3Titulo, FWX2CHAVE, FWX2Unico | native-functions.md |
+| Interface | SaveInter, RestInter | native-functions.md |
+| ExecAuto | MsGetDAuto, MsExecAuto, FWMVCRotAuto | native-functions.md |
 | Restricted | StaticCall, PTInternal, PARAMBOX, etc. | restricted-functions.md |
 
 ## Data Dictionary Quick Reference

@@ -5234,6 +5234,408 @@ oEdit:Activate()
 
 ---
 
+## Utility Functions
+
+### FwGetArea
+
+Modern alternative to `GetArea()`. Saves the current work area state (alias, order, recno, filter) for later restoration. Preferred over `GetArea()` in new code.
+
+**Syntax:** `FwGetArea( [cAlias] ) --> aArea`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias | C | Alias to save state for (optional, defaults to current alias) |
+
+**Return:** A - Array with saved work area state.
+
+**Example:**
+```advpl
+Local aArea := FwGetArea("SA1")
+// ... database operations ...
+FwRestArea(aArea)
+```
+
+---
+
+### FwRestArea
+
+Modern alternative to `RestArea()`. Restores the work area state saved by `FwGetArea()`.
+
+**Syntax:** `FwRestArea( aArea ) --> Nil`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| aArea | A | Area state array from FwGetArea() |
+
+**Return:** Nil.
+
+**Example:**
+```advpl
+Local aArea := FwGetArea("SA1")
+
+DbSelectArea("SA1")
+DbSetOrder(1)
+DbSeek(xFilial("SA1") + cCodCli)
+
+FwRestArea(aArea)
+```
+
+---
+
+### FwGetUserName
+
+Returns the full name of the currently logged user.
+
+**Syntax:** `FwGetUserName() --> cUserName`
+
+**Return:** C - Full name of the current user.
+
+**Example:**
+```advpl
+Local cUser := FwGetUserName()
+Conout("Logged user: " + cUser)
+```
+
+---
+
+### UsrRetName
+
+Returns the user name for a given user code. Unlike `FwGetUserName()` which returns the current user, this function accepts a user code parameter.
+
+**Syntax:** `UsrRetName( cUserId ) --> cUserName`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cUserId | C | User code (from __CUSERID or similar) |
+
+**Return:** C - Full name of the specified user.
+
+**Example:**
+```advpl
+Local cName := UsrRetName("000001")
+Conout("User name: " + cName)
+```
+
+---
+
+### FWMsgRun
+
+Displays a modal dialog with a message and a progress indicator while executing a code block. Used for operations that take a few seconds where a full progress bar is overkill.
+
+**Syntax:** `FWMsgRun( oOwner, bAction, cTitle, cMessage ) --> Nil`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| oOwner | O | Owner object (use Nil for main window) |
+| bAction | B | Code block to execute while showing the message |
+| cTitle | C | Dialog title |
+| cMessage | C | Message displayed while processing |
+
+**Return:** Nil.
+
+**Example:**
+```advpl
+FWMsgRun(Nil, {|| ProcessData()}, "Processing", "Please wait...")
+```
+
+---
+
+### FWInputBox
+
+Displays an input dialog that prompts the user to enter a value. Returns the entered value or Nil if cancelled.
+
+**Syntax:** `FWInputBox( cTitle, cDefault, nSize, cPicture, lPassword ) --> cValue`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cTitle | C | Dialog title/prompt |
+| cDefault | C | Default value in the input field |
+| nSize | N | Maximum input length (optional) |
+| cPicture | C | Display format mask (optional) |
+| lPassword | L | `.T.` to mask input as password (optional) |
+
+**Return:** C - Value entered by the user, or Nil if cancelled.
+
+**Example:**
+```advpl
+Local cValue := FWInputBox("Enter client code:", "", 6)
+If cValue != Nil
+    // Process input
+EndIf
+```
+
+---
+
+### FWFreeObj
+
+Releases an object from memory, setting the variable to Nil. Useful for explicit cleanup of large objects.
+
+**Syntax:** `FWFreeObj( @oObj ) --> Nil`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| oObj | O | Object to release (passed by reference) |
+
+**Return:** Nil. The variable is set to Nil.
+
+**Example:**
+```advpl
+Local oModel := FWLoadModel("MATA030")
+// ... use model ...
+FWFreeObj(@oModel)
+```
+
+---
+
+### FWFreeVar
+
+Releases a variable from memory, setting it to Nil. Works with any type.
+
+**Syntax:** `FWFreeVar( @xVar ) --> Nil`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| xVar | U | Variable to release (passed by reference) |
+
+**Return:** Nil.
+
+---
+
+### Fw8601ToDate
+
+Converts an ISO 8601 date string to Protheus Date type.
+
+**Syntax:** `Fw8601ToDate( cISO8601 ) --> dDate`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cISO8601 | C | Date string in ISO 8601 format (e.g., "2025-01-15T10:30:00Z") |
+
+**Return:** D - Protheus date value.
+
+**Example:**
+```advpl
+Local dDate := Fw8601ToDate("2025-01-15T10:30:00Z")
+// dDate == CtoD("15/01/2025")
+```
+
+---
+
+### FWDateTo8601
+
+Converts a Protheus Date variable to ISO 8601 string format.
+
+**Syntax:** `FWDateTo8601( dDate [, cTime] ) --> cISO8601`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| dDate | D | Protheus date value |
+| cTime | C | Optional time string (HH:MM:SS). Defaults to "00:00:00" |
+
+**Return:** C - Date in ISO 8601 format (e.g., "2025-01-15T00:00:00Z").
+
+**Example:**
+```advpl
+Local cISO := FWDateTo8601(Date(), Time())
+// cISO == "2025-01-15T14:30:00Z"
+```
+
+---
+
+### FWHttpEncode
+
+URL-encodes a string, replacing special characters with percent-encoded equivalents.
+
+**Syntax:** `FWHttpEncode( cString ) --> cEncoded`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cString | C | String to encode |
+
+**Return:** C - URL-encoded string.
+
+**Example:**
+```advpl
+Local cEncoded := FWHttpEncode("name=John Doe&city=São Paulo")
+// "name%3DJohn+Doe%26city%3DS%C3%A3o+Paulo"
+```
+
+---
+
+### FWURIDecode
+
+Decodes a URL-encoded string back to its original form.
+
+**Syntax:** `FWURIDecode( cEncoded ) --> cDecoded`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cEncoded | C | URL-encoded string |
+
+**Return:** C - Decoded string.
+
+**Example:**
+```advpl
+Local cDecoded := FWURIDecode("name%3DJohn+Doe")
+// "name=John Doe"
+```
+
+---
+
+### MayIUseCode
+
+Semaphore function that reserves a sequential code to prevent duplicates in concurrent environments. Checks if a code is available and reserves it atomically.
+
+**Syntax:** `MayIUseCode( cAlias, cField, cCode ) --> lAvailable`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias | C | Table alias (e.g., "SA1") |
+| cField | C | Field name containing the code (e.g., "A1_COD") |
+| cCode | C | Code value to reserve |
+
+**Return:** L - `.T.` if code is available and was reserved.
+
+**Example:**
+```advpl
+Local cNewCode := GetSXENum("SA1", "A1_COD")
+
+If MayIUseCode("SA1", "A1_COD", cNewCode)
+    // Safe to use this code
+    ConfirmSX8()
+Else
+    // Code already taken, get another
+    RollBackSX8()
+EndIf
+```
+
+---
+
+### MPCriaNumS
+
+Generates a sequential number with control/locking. Used internally by `GetSXENum` for sequential numbering in tables.
+
+**Syntax:** `MPCriaNumS( cAlias, cField, nLength ) --> cNumber`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias | C | Table alias |
+| cField | C | Field name |
+| nLength | N | Length of the number to generate |
+
+**Return:** C - Next sequential number as string, left-padded with zeros.
+
+---
+
+### MsGetDAuto (Rotina Automatica)
+
+Executes a standard Protheus routine automatically (without user interface). Used for programmatic record creation/editing via ExecAuto / MsExecAuto.
+
+**Syntax:** `MsExecAuto( {|x,y,z| FunctionName(x,y,z)}, nOpc )` or via `MsGetDAuto`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| nOpc | N | Operation: 3=Include, 4=Edit, 5=Delete |
+
+**Important:** Requires Private variables to be pre-populated with field values before calling.
+
+**Example:**
+```advpl
+Private lMsErroAuto := .F.
+
+// Populate fields for automatic routine
+MATA030(3, "SA1", {"A1_COD", "000001", Nil}, ;
+                   {"A1_LOJA", "01", Nil}, ;
+                   {"A1_NOME", "Client Name", Nil})
+
+If lMsErroAuto
+    Conout("Error in auto routine")
+EndIf
+```
+
+> **Preferred approach:** Use `FWMVCRotAuto()` for MVC-based routines instead of direct `MsExecAuto`. See patterns-mvc.md for MVC automatic routine patterns.
+
+---
+
+### SaveInter
+
+Saves the current interface state (active dialogs, menus, browse positions). Used before opening a new dialog that temporarily replaces the current interface.
+
+**Syntax:** `SaveInter() --> Nil`
+
+**Return:** Nil.
+
+---
+
+### RestInter
+
+Restores the interface state previously saved by `SaveInter()`.
+
+**Syntax:** `RestInter() --> Nil`
+
+**Return:** Nil.
+
+**Example:**
+```advpl
+SaveInter()
+
+// Open temporary dialog
+oDlg := TDialog():New(0, 0, 300, 400, "Temporary")
+oDlg:Activate()
+
+RestInter()
+```
+
+---
+
+### FWX3Titulo
+
+Returns the title (description) of a field from the SX3 dictionary.
+
+**Syntax:** `FWX3Titulo( cField ) --> cTitle`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cField | C | Field name (e.g., "A1_COD") |
+
+**Return:** C - Field title from SX3 in the current language.
+
+**Example:**
+```advpl
+Local cTitle := FWX3Titulo("A1_NOME")
+// Returns "Nome" (or localized equivalent)
+```
+
+---
+
+### FWX2CHAVE
+
+Returns the key expression (index key) for a table from the SX2 dictionary.
+
+**Syntax:** `FWX2CHAVE( cAlias ) --> cKeyExpr`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias | C | Table alias (e.g., "SA1") |
+
+**Return:** C - Key expression string from SX2.
+
+---
+
+### FWX2Unico
+
+Returns the unique key expression for a table from the SX2 dictionary.
+
+**Syntax:** `FWX2Unico( cAlias ) --> cUniqueExpr`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias | C | Table alias (e.g., "SA1") |
+
+**Return:** C - Unique key expression string from SX2.
+
+---
+
 ## Legacy / Compatibility Functions
 
 ### StaticCall (BLOCKED — DO NOT USE)
