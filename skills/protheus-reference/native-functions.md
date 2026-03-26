@@ -5636,6 +5636,248 @@ Returns the unique key expression for a table from the SX2 dictionary.
 
 ---
 
+## Security and Authentication Classes
+
+### FWoAuth2Url
+
+Class that generates an object with authorization, token, and assertion URLs. Used as a dependency for the FWoAuth2Client constructor.
+
+**Syntax:** `FWoAuth2Url():New( [cAuthorize], [cToken], [cAssertion] ) --> oFWoAuth2Url`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAuthorize | C | Authorization URL for user redirection |
+| cToken | C | URL for obtaining the access token after authorization |
+| cAssertion | C | Optional assertion URL, if required by the provider |
+
+**Return:** O - FWoAuth2Url object.
+
+---
+
+### FWoAuth2Client
+
+Generic OAuth2 authentication client class, following the [RFC6749](http://tools.ietf.org/html/rfc6749) specification. Used as a base class for specific OAuth2 integrations (e.g., FWFacebook, FWTwitter, FWLinkedIn, FWGoogleDrive).
+
+**Syntax:** `FWoAuth2Client():New( cConsumer, cSecret, oURL ) --> oFWoAuth2Client`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cConsumer | C | Consumer key / API user, provided by the service provider |
+| cSecret | C | Consumer secret / API password, provided by the service provider |
+| oURL | O | FWoAuth2Url object with the provider's URLs |
+
+**Return:** O - FWoAuth2Client object.
+
+**Prerequisites:**
+- REST Server must be active.
+- `appserver.ini` must have the callback endpoint configured:
+```ini
+[OAUTH_CLIENT]
+CALLBACK_SERVER=https://server:port/rest/oauthcallback
+EXTERNALBROWSER=1   ; Optional - lib 20240812+, opens new browser tab in webapp
+```
+
+**Key methods:**
+
+| Method | Syntax | Description |
+|--------|--------|-------------|
+| SetAsCode | `SetAsCode()` | Sets Authorization Grant type to Authorization Code |
+| SetAsImplicit | `SetAsImplicit()` | Sets Authorization Grant type to Implicit |
+| SetAsResourceOwner | `SetAsResourceOwner( cUsername, cPassword )` | Sets Authorization Grant type to Resource Owner |
+| SetAsClientCredentials | `SetAsClientCredentials()` | Sets Authorization Grant type to Client Credentials |
+| Access | `Access( cURLResource [, cMethod] [, cQuery] [, cBody] [, aHeadOut] ) --> cResponse` | Authenticates, obtains token, and requests the resource |
+| GetToken | `GetToken() --> cToken` | Returns the stored token (does not generate a new request) |
+| ClearToken | `ClearToken() --> lSuccess` | Clears the access token from the current instance |
+| ClearError | `ClearError()` | Clears errors from the current instance |
+| SetGrantInUrl | `SetGrantInUrl( lGrantInUrl )` | Controls sending grant_type in the auth URL (lib 20221010+) |
+| SetAuthInHeader | `SetAuthInHeader( lAuthInHeader )` | Controls sending Authorization header in token request (lib 20221010+) |
+| Destroy | `Destroy()` | Destructor — cleans up objects and variables |
+
+**Example:**
+```advpl
+Local oURL    := FWoAuth2Url():New("https://provider.com/authorize", "https://provider.com/token")
+Local oClient := FWoAuth2Client():New("my_consumer_key", "my_consumer_secret", oURL)
+
+oClient:SetAsCode()
+
+Local cResp := oClient:Access("https://api.provider.com/resource", "GET")
+If !Empty(cResp)
+    Conout("Response: " + cResp)
+EndIf
+
+oClient:Destroy()
+```
+
+---
+
+### FWSafeVault
+
+Secure character data storage mechanism. Only the method or function+source that created the record can view, modify, or delete it. Requires LIB >= 20210405, appserver >= 17.3.0.15, Protheus >= 12.1.23.
+
+**Syntax:** `FWSafeVault():New() --> oVault`
+
+**Return:** O - FWSafeVault object.
+
+**Key methods:**
+
+| Method | Syntax | Description |
+|--------|--------|-------------|
+| Put | `Put( cID, cValue ) --> lSuccess` | Stores or updates a value (max 175 chars). ID is scoped to the calling source/function |
+| Get | `Get( cID ) --> cValue` | Retrieves stored value. Returns "" if not found. Only accessible from the originating source |
+| Delete | `Delete( cID ) --> lSuccess` | Deletes a stored value. Only accessible from the originating source |
+
+**Example:**
+```advpl
+Local oVault := FWSafeVault():New()
+Local cID    := "MyKey"
+
+oVault:Put(cID, "Sensitive data value")
+
+Local cData := oVault:Get(cID)        // "Sensitive data value"
+oVault:Delete(cID)
+
+cData := oVault:Get(cID)              // "" (deleted)
+```
+
+---
+
+### FWSecretVault
+
+Secure secret key storage mechanism (hash-based). The stored value **cannot be retrieved** — only verified via `Check()`. Useful for storing passwords and secrets. Only the originating source can modify or delete, but **any source can verify** via Check(). Requires LIB >= 20210405, appserver >= 17.3.0.15, Protheus >= 12.1.23.
+
+**Syntax:** `FWSecretVault():New() --> oVault`
+
+**Return:** O - FWSecretVault object.
+
+**Key methods:**
+
+| Method | Syntax | Description |
+|--------|--------|-------------|
+| Put | `Put( cID, cValue ) --> lSuccess` | Stores a key-value pair. ID is global (not scoped to source) — use prefixed IDs to avoid conflicts |
+| Check | `Check( cID, cValue ) --> lMatch` | Verifies if the value matches the stored secret. Can be called from any source |
+| Delete | `Delete( cID ) --> lSuccess` | Deletes a stored pair. Only accessible from the originating source |
+
+**Example:**
+```advpl
+Local oVault := FWSecretVault():New()
+Local cID    := "gpe_portal_pass"
+
+oVault:Put(cID, "my secret password")
+
+Local lOk := oVault:Check(cID, "my secret password")  // .T.
+lOk := oVault:Check(cID, "wrong password")             // .F.
+
+oVault:Delete(cID)
+lOk := oVault:Check(cID, "my secret password")         // .F. (deleted)
+```
+
+---
+
+### FwProtectedDataUtil
+
+Utility class with static methods for Protected Data (LGPD) management. All methods are static — use as `FwProtectedDataUtil():Method(params)`. Available from LIB >= 20200214. Related tables: XAM (field configuration), XAL (PD groups), SXG (field groups).
+
+**Key methods:**
+
+| Method | Syntax | Description |
+|--------|--------|-------------|
+| IsFieldInList | `IsFieldInList( cField ) --> lRet` | Checks if a field is configured for Protected Data (XAM table) |
+| AreFieldsInList | `AreFieldsInList( aFields [, lRetDetail] ) --> aRet` | Returns FwPDFieldRepository objects for fields with PD config |
+| CanFieldBeAnonymized | `CanFieldBeAnonymized( cField ) --> lRet` | Checks if a field can be anonymized (in XAM and XAM_ANONIM != 2) |
+| GetFieldDetails | `GetFieldDetails( cField ) --> oRet` | Returns FwPDFieldRepository with full details, or Nil if not configured |
+| GetFieldGroups | `GetFieldGroups( cField ) --> aRet` | Returns FwPDGroupRepository objects for PD groups containing the field |
+| GetAliasFieldsInList | `GetAliasFieldsInList( cAlias [, lRetDetail] ) --> aRet` | Returns PD-configured fields for an alias |
+| GetAliasAnonymizeFields | `GetAliasAnonymizeFields( cAlias [, lRetDetail] ) --> aRet` | Returns anonymizable fields for an alias |
+| GetSXGFieldsInList | `GetSXGFieldsInList( cGroup [, lRetDetail] ) --> aRet` | Returns PD-configured fields from a SXG group |
+| GetSXGFieldsCanBeAnonymized | `GetSXGFieldsCanBeAnonymized( cGroup [, lRetDetail] ) --> aRet` | Returns anonymizable fields from a SXG group |
+| GetSXGFieldsCannotBeAnonymized | `GetSXGFieldsCannotBeAnonymized( cGroup [, lRetDetail] ) --> aRet` | Returns non-anonymizable fields from a SXG group |
+| HasAliasAnySensibleField | `HasAliasAnySensibleField( cAlias ) --> lRet` | Checks if alias has any field in a sensitive PD group |
+| HasAliasAnyPersonalField | `HasAliasAnyPersonalField( cAlias ) --> lRet` | Checks if alias has any field in a personal PD group |
+| IsGroupPersonal | `IsGroupPersonal( cGroupId [, @cDesc] ) --> lRet` | Checks if a PD group is of type personal |
+| IsGroupSensible | `IsGroupSensible( cGroupId [, @cDesc] ) --> lRet` | Checks if a PD group is of type sensitive |
+| UsrAccessPDField | `UsrAccessPDField( [cIdUser], aFields ) --> aRet` | Returns fields the user has PD access to |
+| UsrNoAccessFieldsInList | `UsrNoAccessFieldsInList( aFields, lAvalPessoal, lAvalSensivel ) --> aList` | Returns fields the user does NOT have access to |
+| ToAnonymizeByRecno | `ToAnonymizeByRecno( cAlias, aRecno [, aFields], @cMessage ) --> lRet` | Anonymizes fields by recno list |
+| ToAnonymizeByKey | `ToAnonymizeByKey( cAlias, aKeys [, aFields], @cMessage ) --> lRet` | Anonymizes fields by key values |
+
+**Example:**
+```advpl
+// Check if field is in Protected Data config
+Local lPD := FwProtectedDataUtil():IsFieldInList("A1_CGC")  // .T. or .F.
+
+// Get fields user can access
+Local aAccess := FwProtectedDataUtil():UsrAccessPDField(, {"RA_SERCP","RA_RG","A1_END"})
+
+// Anonymize by recno
+Local cMsg := ""
+Local lOk  := FwProtectedDataUtil():ToAnonymizeByRecNo("SA1", {1, 5, 10},, @cMsg)
+
+// Check if alias has sensitive fields
+Local lSens := FwProtectedDataUtil():HasAliasAnySensibleField("SA1")
+```
+
+---
+
+### FwPDFieldRepository
+
+Read-only repository class representing a Protected Data field configuration. Objects are created internally by FwProtectedDataUtil methods. Available from LIB >= 20200214.
+
+**Key properties:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| cField | C | Field code |
+
+**Key methods:**
+
+| Method | Syntax | Description |
+|--------|--------|-------------|
+| GetDetails | `GetDetails() --> aDetails` | Returns array of FwPDFieldDetailRepository objects |
+
+---
+
+### FwPDFieldDetailRepository
+
+Read-only repository class representing the detail configuration of a Protected Data field. Objects are created internally by FwPDFieldRepository:GetDetails(). Available from LIB >= 20200214.
+
+**Key properties:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| cGroupId | C | PD group code the field is associated with |
+| cAlias | C | Table alias the field belongs to |
+| cModule | C | Module that justified the configuration |
+| lAnonymize | L | Whether the field can be anonymized |
+| cClassification | C | Classification code |
+| cJustification | C | Justification text |
+| lPropri | L | Whether it is a standard/module-suggested configuration |
+
+---
+
+### FwPDGroupRepository
+
+Read-only repository class representing a Protected Data group (XAL table). Objects are created internally by FwProtectedDataUtil:GetFieldGroups(). Available from LIB >= 20200214.
+
+**Key properties:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| cGroup | C | Group code |
+| cDescription | C | Group description |
+| cType | C | Group type: "1" = personal, "2" = sensitive |
+| lPropri | L | Whether it is a standard/module-suggested configuration |
+
+**Key methods:**
+
+| Method | Syntax | Description |
+|--------|--------|-------------|
+| IsPersonal | `IsPersonal() --> lRet` | Returns .T. if the group is personal |
+| IsSensible | `IsSensible() --> lRet` | Returns .T. if the group is sensitive |
+| Personal | `FwPDGroupRepository():Personal() --> cValue` | Static. Returns "1" (personal type constant) |
+| Sensible | `FwPDGroupRepository():Sensible() --> cValue` | Static. Returns "2" (sensitive type constant) |
+
+---
+
 ## Legacy / Compatibility Functions
 
 ### StaticCall (BLOCKED — DO NOT USE)
