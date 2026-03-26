@@ -5878,6 +5878,343 @@ Read-only repository class representing a Protected Data group (XAL table). Obje
 
 ---
 
+## Company/Branch and Scheduling Functions
+
+### FWLoadSM0
+
+Loads branch/company information from the SIGAMAT.EMP file. Returns a multidimensional array with all company/branch data for the Protheus environment.
+
+**Syntax:** `FWLoadSM0( [lForce], [lChkUser] ) --> aEmpresas`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| lForce | L | Force refresh of records in the array |
+| lChkUser | L | Update information related to the logged-in user |
+
+**Return:** A - Array of branch information from SIGAMAT.EMP.
+
+**Array structure (access via constants):**
+
+| Pos | Constant | Description |
+|-----|----------|-------------|
+| 1 | SM0_GRPEMP | Company group code |
+| 2 | SM0_CODFIL | Full branch code (company + business unit + branch) |
+| 3 | SM0_EMPRESA | Company code |
+| 4 | SM0_UNIDNEG | Business unit code |
+| 5 | SM0_FILIAL | Branch code |
+| 6 | SM0_NOME | Branch name |
+| 7 | SM0_NOMRED | Short branch name |
+| 8 | SM0_SIZEFIL | Branch field size |
+| 9 | SM0_LEIAUTE | Company group layout |
+| 10 | SM0_EMPOK | Authorized company |
+| 11 | SM0_USEROK | User has permission for the company/branch |
+| 12 | SM0_RECNO | Branch recno in SIGAMAT |
+| 13 | SM0_LEIAEMP | Company layout (EE) |
+| 14 | SM0_LEIAUN | Business unit layout (UU) |
+| 15 | SM0_LEIAFIL | Branch layout (FFFF) |
+| 16 | SM0_STATUS | Branch status (0=Released, 1=Blocked for maintenance) |
+| 17 | SM0_NOMECOM | Commercial name |
+| 18 | SM0_CGC | CNPJ/Tax ID |
+| 19 | SM0_DESCEMP | Company description |
+| 20 | SM0_DESCUN | Business unit description |
+| 21 | SM0_DESCGRP | Group description |
+| 22 | SM0_IDMID | Identity Manager code |
+| 23 | SM0_PICTURE | Picture for company group and branch |
+| 24 | SM0_FULLNAME | Full legal name (lib 20211004+) |
+
+**Example:**
+```advpl
+Local aFiliais := FWLoadSM0(.T., .T.)
+Local nI
+
+For nI := 1 To Len(aFiliais)
+    Conout("Company: " + aFiliais[nI][SM0_EMPRESA])
+    Conout("Branch: "  + aFiliais[nI][SM0_FILIAL])
+    Conout("Name: "    + aFiliais[nI][SM0_NOME])
+Next nI
+```
+
+---
+
+### FWModeAccess
+
+Returns the sharing mode of a table for the specified level. Source: FWFilial.
+
+**Syntax:** `FWModeAccess( [cAlias], [nLevel], [cGrpCompany] ) --> cMode`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias | C | Table alias to evaluate (default: current Alias()) |
+| nLevel | N | Level: 1=Company, 2=Business Unit, 3=Branch (default: 3) |
+| cGrpCompany | C | Company group to check (default: cEmpAnt) |
+
+**Return:** C - "C" = Shared, "E" = Exclusive.
+
+**Example:**
+```advpl
+// Check sharing mode at company level
+Local cMode := FWModeAccess("SA1", 1)
+
+If cMode == "E"
+    // Table SA1 is exclusive per company
+    cFilter := "A1_FILIAL == '" + xFilial("SA1") + "'"
+EndIf
+
+// Check at branch level (default)
+Local cModeFil := FWModeAccess("SA1")
+```
+
+---
+
+### FwListBranches
+
+Displays a branch selection screen allowing users to select branches from their company, with search and filter capabilities.
+
+**Syntax:** `FwListBranches( [lCheckUser], [lAllEmp], [lOnlySelect], [aRetInfo] ) --> aInfoRet`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| lCheckUser | L | Show only branches the user has access to (default: .T.) |
+| lAllEmp | L | Show all companies in the group, not just current (default: .F.) |
+| lOnlySelect | L | Return only selected (checked) records (default: .T.) |
+| aRetInfo | A | Fields to return. Default: { 'FLAG', 'SM0_CODFIL', 'SM0_NOMRED', 'SM0_CGC', 'SM0_INSC', 'SM0_INSCM' } |
+
+**Accepted fields for aRetInfo:** FLAG, SM0_CODFIL, SM0_EMPRESA, SM0_UNIDNEG, SM0_FILIAL, SM0_DESCEMP, SM0_NOMRED, SM0_CGC, SM0_INSC, SM0_INSCM.
+
+**Return:** A - Array with branch information. Empty array if user cancels.
+
+**Example:**
+```advpl
+// Show all companies in the group, return only selected
+Local aResult := FwListBranches(.F., .T., .T., { 'FLAG', 'SM0_CODFIL', 'SM0_CGC', 'SM0_NOMRED' })
+
+If Len(aResult) > 0
+    Local nI
+    For nI := 1 To Len(aResult)
+        Conout("Branch: " + aResult[nI][2] + " - " + aResult[nI][4])
+    Next nI
+EndIf
+```
+
+---
+
+### FWJoinFilial
+
+Creates a SQL JOIN string for branch filtering, analyzing the company layout and sharing modes. Essential for building correct JOINs between tables in embedded SQL or dynamic queries.
+
+**Syntax:** `FWJoinFilial( cAlias1, cAlias2 [, cTbAlias1] [, cTbAlias2] [, lPrefixo] [, cDbMs] [, lFilCompJoin] ) --> cString`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cAlias1 | C | First table alias |
+| cAlias2 | C | Second table alias |
+| cTbAlias1 | C | SQL alias for first table (default: cAlias1) |
+| cTbAlias2 | C | SQL alias for second table (default: cAlias2) |
+| lPrefixo | L | Return alias prefix (default: .T.) |
+| cDbMs | C | Database type (default: TcGetDb()) |
+| lFilCompJoin | L | Use branch field in join evaluating sharing mode (default: .F.) |
+
+**Return:** C - SQL JOIN condition string for branch filtering.
+
+**Example:**
+```advpl
+// Embedded SQL
+Local cAlias := GetNextAlias()
+Local cJoin  := "%" + FWJoinFilial("SRA", "SRC") + "%"
+
+BEGINSQL ALIAS cAlias
+    SELECT SRA.RA_FILIAL, SRA.RA_MAT, SRC.RC_PD, SRC.RC_VALOR
+    FROM %table:SRA% SRA
+    INNER JOIN %table:SRC% SRC ON SRA.RA_MAT = SRC.RC_MAT
+        AND %exp:cJoin%
+    WHERE SRA.RA_MAT = '000001'
+        AND SRA.RA_FILIAL = 'E01U01F01'
+ENDSQL
+
+// Dynamic query
+Local cQuery := "SELECT SRA.RA_MAT, SRC.RC_PD"
+cQuery += " FROM " + RetSqlName("SRA") + " SRA"
+cQuery += " INNER JOIN " + RetSqlName("SRC") + " SRC ON"
+cQuery += " SRA.RA_MAT = SRC.RC_MAT AND " + FWJoinFilial("SRA", "SRC")
+```
+
+---
+
+### FwCallApp
+
+Prepares and executes a web application inside the Protheus interface using TWebEngine and TWebChannel (e.g., PO-UI/THF apps).
+
+**Syntax:** `FwCallApp( cApp [, oOwner] [, oEngine] [, oChannel] [, cHost] [, cSource] [,,,] [, lUseOnBoarding] )`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cApp | C | Application name |
+| oOwner | O | Custom TDialog (if provided, you must call Activate yourself) |
+| oEngine | O | TWebEngine object (passed by reference for manipulation) |
+| oChannel | O | TWebChannel object (passed by reference for manipulation) |
+| cHost | C | Host for simple browse opening (skips pre-processing) |
+| cSource | C | Source name, if different from app name |
+| lUseOnBoarding | L | Opens config wizard if environment is not properly configured (lib 20230626+) |
+
+**Example:**
+```advpl
+// Simple app opening
+FwCallApp("meu.app.web")
+
+// With OnBoarding wizard
+FwCallApp("meu.app.web",,,,,,,,,.T.)
+
+// With custom dialog
+Local oDlg As Object
+DEFINE DIALOG oDlg TITLE "My App" FROM 0,0 TO 600,800 PIXEL
+FwCallApp("meu.app.web", oDlg)
+ACTIVATE DIALOG oDlg CENTERED
+```
+
+---
+
+### FWSchdAvaiable
+
+Returns whether the Schedule service is active.
+
+**Syntax:** `FWSchdAvaiable() --> lActive`
+
+**Return:** L - .T. if the Schedule is active.
+
+---
+
+### FWSchdByFunction
+
+Returns the Schedule code for a given routine name.
+
+**Syntax:** `FWSchdByFunction( cRoutine ) --> cCode`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cRoutine | C | Routine name registered in the Schedule |
+
+**Return:** C - Schedule code for the routine.
+
+**Example:**
+```advpl
+Local cCode := FWSchdByFunction("ROTNAX")
+// If routine "ROTNAX" has code "0001", returns "0001"
+```
+
+---
+
+### FWSchdEmpFil
+
+Returns the company and branch information for a given Schedule code.
+
+**Syntax:** `FWSchdEmpFil( cCode ) --> cEmpFil`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cCode | C | Schedule code |
+
+**Return:** C - Company+Branch string. Multiple values separated by ";".
+
+**Example:**
+```advpl
+Local cEmpFil := FWSchdEmpFil("000005")
+// Returns "9901" or "9901;1010" for multiple branches
+```
+
+---
+
+### FwExecLocaliz
+
+Executes a localized function based on the current country environment. Part of the Protheus localization framework. In Brazil, `FwExecLocaliz("ExecTes", {"Param1"})` executes `ExecTesBRA`. The localized function must exist in the localized source file (e.g., `ATFA050BRA.PRW`).
+
+**Syntax:** `FwExecLocaliz( cFunction [, uParam] ) --> xReturn`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cFunction | C | Base function name for localization |
+| uParam | U | Parameter to pass to the localized function |
+
+**Return:** U - Return value from the localized function.
+
+**Example:**
+```advpl
+// In the standard source (e.g., ATFA050.PRW)
+Local cValue := FwExecLocaliz("Exemplo", {"Mario"})
+
+// In the localized source (e.g., ATFA050BRA.PRW)
+Function ExemploBRA(aParam)
+    Local cNome  := aParam[1]
+    Local cValue := "Bem vindo ao Brasil " + cNome
+Return cValue
+```
+
+---
+
+### FwExistLocaliz
+
+Checks if a localized function exists for the current country environment, without executing it. Typically used before FwExecLocaliz.
+
+**Syntax:** `FwExistLocaliz( cFunction ) --> lExists`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| cFunction | C | Base function name for localization |
+
+**Return:** L - .T. if the localized function exists.
+
+**Example:**
+```advpl
+If FwExistLocaliz("Exemplo")
+    Local cVal := FwExecLocaliz("Exemplo", {"Param1"})
+EndIf
+```
+
+---
+
+### FwBranAltInf
+
+Returns localized branch information from the `SYS_BRANCH_L_` table. **Available only for Russia.**
+
+**Syntax:** `FwBranAltInf( aFields [, cGrpCompany] [, cBranch] ) --> aReturn`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| aFields | A | Array of field names from the localized branch table (SYS_BRANCH_L_ + country suffix) |
+| cGrpCompany | C | Company group (default: cEmpAnt) |
+| cBranch | C | Branch (default: cFilAnt) |
+
+**Return:** A - Array with structure { {cField, cContent}, ... }.
+
+**Example:**
+```advpl
+Local aRet := FwBranAltInf({'BR_KPP', 'BR_FULLNAM'})
+// Returns: { {'BR_KPP', '5151'}, {'BR_FULLNAM', 'Empresa'} }
+```
+
+---
+
+### FwComAltInf
+
+Returns localized company information from the `SYS_COMPANY_L_` table. Searches hierarchically: Business Unit > Company > Company Group. **Available only for Russia.**
+
+**Syntax:** `FwComAltInf( aFields [, cGrpCompany] [, cBranch] ) --> aReturn`
+
+| Param | Type | Description |
+|-------|------|-------------|
+| aFields | A | Array of field names from the localized company table (SYS_COMPANY_L_ + country suffix) |
+| cGrpCompany | C | Company group (default: cEmpAnt) |
+| cBranch | C | Branch (default: cFilAnt) |
+
+**Return:** A - Array with structure { {cField, cContent}, ... }.
+
+**Example:**
+```advpl
+Local aRet := FwComAltInf({'CO_KPP', 'CO_INN'})
+// Returns: { {'CO_KPP', '5151'}, {'CO_INN', '8887'} }
+```
+
+---
+
 ## Legacy / Compatibility Functions
 
 ### StaticCall (BLOCKED — DO NOT USE)
