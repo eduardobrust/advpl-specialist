@@ -8,6 +8,24 @@ Todas as mudancas notaveis deste projeto sao documentadas neste arquivo.
 O formato e baseado no [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 e este projeto segue o [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.7] - 2026-03-26
+
+### Adicionado
+
+- Documentacao completa do TDN para 74+ classes e funcoes em 5 fases no native-functions.md
+- Fase 1: 9 classes UI/Browse (FwBrowse, FWMarkBrowse, FWBrwColumn, FWBrwRelation, FWLegend, FWGridProcess, tNewProcess, FWCalendar, FWSimpEdit)
+- Fase 2: 20 funcoes utilitarias de uso diario (FwGetArea, FwRestArea, FwGetUserName, UsrRetName, FWMsgRun, FWInputBox, FWFreeObj, FWFreeVar, Fw8601ToDate, FWDateTo8601, FWHttpEncode, FWURIDecode, MayIUseCode, MPCriaNumS, MsGetDAuto, SaveInter, RestInter, FWX3Titulo, FWX2CHAVE, FWX2Unico)
+- Fase 3: 8 classes de seguranca/autenticacao (FWoAuth2Client, FWoAuth2Url, FWSafeVault, FWSecretVault, FwProtectedDataUtil, FwPDFieldRepository, FwPDFieldDetailRepository, FwPDGroupRepository)
+- Fase 4: 12 funcoes de empresa/filial e scheduling (FWLoadSM0, FWModeAccess, FwListBranches, FWJoinFilial, FwCallApp, FWSchdAvaiable, FWSchdByFunction, FWSchdEmpFil, FwExecLocaliz, FwExistLocaliz, FwBranAltInf, FwComAltInf)
+- Fase 5: 25+ classes e funcoes de nicho (FwChartFactory, XTree, ApWizard, FWCarolWizard, FWMsPrinter, PrinterVersion, FWBulk, FWQueryCache, FWExecCachedQuery, FWSX9Util, FWSM0Util, FWSXGUtil, FWUIWorkarea, MSProject, TKeyboard, FWBmpRep, MPFilesBinary, AddMashupAlias, AmIIn, ChkAdvplSyntax, MakeSqlExpr, PesqBrw)
+- Integracao do Google Analytics 4 no site de documentacao
+- Workflow de coleta diaria de metricas de trafego
+
+### Corrigido
+
+- Corrigida geracao de codigo criando metodos inexistentes do JsonObject para iteracao case-insensitive de headers — agora usa padrao `GetNames()` + `Upper()` (obrigado [@edusfc15](https://github.com/edusfc15) por reportar [#3](https://github.com/thalysjuvenal/advpl-specialist/issues/3))
+- Movidas todas as declaracoes Local para o topo das funcoes
+
 ## [1.0.6] - 2026-03-23
 
 ### Adicionado
